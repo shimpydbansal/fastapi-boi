@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir poetry
 RUN poetry config virtualenvs.create false --local
 
 # Install project dependencies
-RUN poetry install --no-dev
+RUN poetry install --only main
 
 # Final image for running the application
 FROM python:3.11 AS release

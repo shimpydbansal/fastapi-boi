@@ -63,7 +63,7 @@ jobs:
 #          tags: your-dockerhub-username/your-repo-name:latest
 
       - name: Build Docker image
-        run: docker build -t project1 .
+        run: docker build -t fastapi-boilerplate .
 
       - name: Publish Docker image
         run: |
