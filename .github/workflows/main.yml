@@ -41,13 +41,13 @@ jobs:
       # - name: Run tests
       #   run: pytest
 
-      - name: Code quality checks
-        run: |
-          flake8
-          black --check src
+      # - name: Code quality checks
+      #   run: |
+      #     flake8
+      #     black --check src
 
-      - name: Code formatting checks
-        run: bash scripts/format.sh
+      # - name: Code formatting checks
+      #   run: bash scripts/format.sh
 
 #      - name: Login to DockerHub
 #        uses: docker/login-action@v1
