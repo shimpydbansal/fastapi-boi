@@ -2,7 +2,7 @@
 
 set -x
 
-mypy app
-black app --check
-isort --recursive --check-only app
+mypy src
+black src --check
+isort --check-only app
 flake8
