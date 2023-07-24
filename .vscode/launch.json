@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Chatbot Proj",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+          "main:app",
+          "--reload",
+          "--app-dir=src",
+          "--env-file=.env"
+        ],
+        "cwd": "${workspaceFolder}",
+        "envFile": "${workspaceFolder}/.env"
+      }
+    ]
+}
+  

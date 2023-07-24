@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "fastapi-boilerplate"
+version = "0.1.0"
+description = ""
+authors = ["Shimpy Bansal <shimpydbansal@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+#packages = [{include = "src", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = "^0.23.0"
+fastapi = "^0.100.0"
+sqlalchemy = "^2.0.19"
+pytest = "^7.4.0"
+langchain = "^0.0.234"
+opentelemetry-api = "^1.19.0"
+opentelemetry-sdk = "^1.19.0"
+opentelemetry-instrumentation-fastapi = "^0.40b0"
+alembic = "^1.11.1"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+black = "^23.7.0"
+sphinx = "^7.0.1"
+pytest = "^7.4.0"
+pre-commit = "^3.3.3"
+sphinx-markdown-builder = "^0.6.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
