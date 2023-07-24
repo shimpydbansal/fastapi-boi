@@ -37,4 +37,4 @@ ENV PYTHONPATH /app/src
 EXPOSE 80
 
 # Start the web service
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["bash", "-c", "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 80"]
