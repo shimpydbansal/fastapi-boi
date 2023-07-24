@@ -1,16 +1,15 @@
 # import pytest
 from fastapi.testclient import TestClient
 
-from src.main import app
+from main import app
 
 client = TestClient(app)
 
 
-def test_handle_question():
-    """Test the handle_question endpoint"""
-    response = client.get("/question-answering?question=What is the capital of France?")
+def test_handle_health():
+    """Test the health endpoint"""
+    response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {
-        "question": "What is the capital of France?",
-        "answer": "Answer to the question",
+        "message": "Ok!"
     }
