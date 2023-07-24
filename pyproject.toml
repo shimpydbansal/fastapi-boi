@@ -8,7 +8,7 @@ readme = "README.md"
 #packages = [{include = "src", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.7, <3.12"
 uvicorn = "^0.23.0"
 fastapi = "^0.100.0"
 sqlalchemy = "^2.0.19"
