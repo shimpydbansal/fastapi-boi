@@ -1,4 +1,4 @@
-name: CI
+name: Test and Build
 
 on:
   push:
@@ -12,84 +12,91 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      # - name: Install dependencies
-      #   run: |
-      #     python -m venv .venv
-      #     source .venv/bin/activate
-      #     python -m pip install --upgrade pip
-      #     pip install poetry
-      #     poetry install
 
       - name: Create and start virtual environment
         run: |
           python -m venv .venv
           source .venv/bin/activate
 
-      - name: Install PIP
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install poetry
+          poetry install
 
-      - name: Install dependencies
-        run: poetry install
-
-      # - name: Run tests
+      # - name: Run Tests
       #   run: pytest
 
-      # - name: Code quality checks
-      #   run: |
-      #     flake8
-      #     black --check src
+      - name: Check Code Quality
+        run: flake8
 
-      # - name: Code formatting checks
-      #   run: bash scripts/format.sh
+      - name: Check Code Formatting
+        run: black --check src
 
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v2
-#        with:
-#          context: .
-#          push: true
-#          tags: your-dockerhub-username/your-repo-name:latest
+      - name: Apply Code Formatting
+        run: bash scripts/format.sh
 
-      - name: Build Docker image
-        run: docker build -t fastapi-boilerplate .
-
-      - name: Publish Docker image
-        run: |
-          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker tag fastapi-boilerplate ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-boilerplate
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-boilerplate
-
-
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      # Pull Docker image and run container steps go here...
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Run Alembic migrations
-        run: alembic upgrade head
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # - name: Generate documentation
-      #   run: make html
-      #   working-directory: /docs
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-boilerplate:latest
 
-      # - name: Deploy Documentation
-        # Use appropriate actions depending on your hosting service...
+  documentation:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-      # - name: Build and Deploy 🚀
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     build_dir: ./docs/build
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+
+      - name: Generate Documentation
+        run: bash scripts/documentation.sh
+
+      - name: Commit Documentation Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add documentation/*
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update documentation"
+            git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          fi
