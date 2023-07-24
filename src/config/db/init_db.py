@@ -1,7 +1,3 @@
-from sqlalchemy.orm import Session
-
-# from sqlalchemy.orm import sessionmaker
-
 # import crud
 # import schemas
 # from core.config import settings
@@ -10,6 +6,10 @@ import sys
 
 from db import Base  # noqa: F401
 from db.session import engine
+from sqlalchemy.orm import Session
+
+# from sqlalchemy.orm import sessionmaker
+
 
 # from crud import crud_message
 # from models import Message

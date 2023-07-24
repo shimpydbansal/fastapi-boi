@@ -17,3 +17,10 @@ repos:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     -   id: check-docstring-first
+-   repo: local
+    hooks:
+    -   id: format-code
+        name: Format code
+        entry: scripts/format_imports.sh
+        language: script
+        pass_filenames: false

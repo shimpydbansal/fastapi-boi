@@ -1,7 +1,6 @@
+from core.config import settings
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-
-from core.config import settings
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
 with engine.connect() as connection:
