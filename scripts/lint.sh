@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-
+#!/bin/sh -e
 set -x
 
 mypy src

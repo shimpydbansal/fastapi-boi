@@ -1,5 +1,5 @@
-#!/bin/sh
-set -e
+#!/bin/sh -e
+set -x
 
 # Check code formatting with black
 black --check src || exit 1
