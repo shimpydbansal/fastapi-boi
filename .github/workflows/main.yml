@@ -31,17 +31,11 @@ jobs:
           pip install poetry
           poetry install
 
-      # - name: Run Tests
-      #   run: pytest
-
-      - name: Check Code Quality
-        run: flake8
-
       - name: Check Code Formatting
-        run: black --check src
+        run: bash scripts/check_format.sh
 
-      - name: Apply Code Formatting
-        run: bash scripts/format.sh
+      - name: Run Tests
+        run: bash scripts/test.sh
 
   build:
     needs: test
