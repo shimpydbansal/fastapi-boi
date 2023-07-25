@@ -2,7 +2,7 @@
 set -x
 
 # Check code formatting with black
-black --check src || exit 1
+poetry run black --check src || exit 1
 
 # Check code formatting with flake8
-flake8 src || exit 1
+poetry run flake8 src || exit 1
