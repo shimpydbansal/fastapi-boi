@@ -1,9 +1,17 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
-from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
+from pydantic import AnyHttpUrl
+from pydantic import PostgresDsn
+from pydantic import validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME: str
     API_V1_STR: str = "/api/v1"
     # SERVER_NAME: str
     # SERVER_HOST: AnyHttpUrl
@@ -20,7 +28,6 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # PROJECT_NAME: str
     # SENTRY_DSN: Optional[HttpUrl] = None
 
     # @validator("SENTRY_DSN", pre=True)
@@ -31,12 +38,12 @@ class Settings(BaseSettings):
 
     MAX_HISTORY_LENGTH: int = 5
 
-    POSTGRES_HOST: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    POSTGRES_PORT: int
-    POSTGRES_SCHEMA: str
+    DB_HOST: str
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
+    DB_PORT: int
+    DB_SCHEMA: str
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
@@ -45,11 +52,11 @@ class Settings(BaseSettings):
             return v
         return PostgresDsn.build(
             scheme="postgresql",
-            user=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_HOST"),
-            port=str(values.get("POSTGRES_PORT")),
-            path=f"/{values.get('POSTGRES_DB')}",
+            username=values.get("DB_USER"),
+            password=values.get("DB_PASSWORD"),
+            host=values.get("DB_HOST"),
+            port=values.get("DB_PORT"),
+            path=f"{values.get('DB_NAME')}",
         )
 
     class Config:

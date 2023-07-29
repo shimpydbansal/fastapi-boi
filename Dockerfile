@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy only the files needed for installing dependencies
 COPY src/ /app/src/
+COPY alembic.ini /app/
 COPY pyproject.toml poetry.lock /app/
 
 # Install Poetry
@@ -25,6 +26,7 @@ WORKDIR /app
 
 # Copy source code
 COPY --from=build /app/src/ /app/src/
+COPY --from=build /app/alembic.ini /app/
 
 # Copy installed dependencies from the builder image
 COPY --from=build /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/

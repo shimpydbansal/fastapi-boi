@@ -1,8 +1,7 @@
 version: "3"
 services:
   postgres:
-    container_name: postgres
-    image: postgres:14.8-alpine
+    build: ./postgres
     ports:
       - "5432:5432"
     expose:
@@ -12,28 +11,27 @@ services:
     env_file:
       - postgres.env
     networks:
-      - project1
+      - boilerplate
 
   pgadmin:
-    container_name: pgadmin
     image: dpage/pgadmin4
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - pgadmindata:/root/.pgadmin
     env_file:
       - postgres.env
     networks:
-      - project1
+      - boilerplate
     links:
       - postgres:postgres
 
-  project1:
+  backend:
     restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
-    command: uvicorn src.main:app --host 0.0.0.0 --port 80 --reload
+    command: /bin/bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 80 --reload"
     ports:
       - "80:80"
     depends_on:
@@ -44,7 +42,7 @@ services:
     env_file:
       - .env
     networks:
-      - project1
+      - boilerplate
 
 volumes:
   postgresdata:
@@ -53,5 +51,5 @@ volumes:
     driver: local
 
 networks:
-  project1:
+  boilerplate:
     driver: bridge
