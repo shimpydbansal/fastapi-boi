@@ -9,13 +9,13 @@ autoflake \
   --recursive \
   --remove-unused-variables \
   --in-place src \
-  --exclude=__init__.py,venv,alembic/versions/*.py
+  --exclude=__init__.py,venv
 
 # Sort imports
 isort --force-single-line-imports --line-length 79 src
 
 # Reformat code using Black
-black -l 79 src --exclude=venv
+black -l 79 src --exclude=venv,alembic/versions/*.py
 
 # Format code according to PEP 8
 autopep8 --in-place --aggressive --aggressive --recursive src --exclude=venv
