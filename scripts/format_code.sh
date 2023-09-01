@@ -9,7 +9,7 @@ autoflake \
   --recursive \
   --remove-unused-variables \
   --in-place src \
-  --exclude=__init__.py,venv
+  --exclude=__init__.py,venv,alembic/versions/*.py
 
 # Sort imports
 isort --force-single-line-imports --line-length 79 src
