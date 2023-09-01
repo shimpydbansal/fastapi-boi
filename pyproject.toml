@@ -5,7 +5,7 @@ description = ""
 authors = ["Shimpy Bansal <shimpydbansal@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-#packages = [{include = "src", from = "src"}]
+#packages = [{include = "src/**/*"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<3.12"
@@ -31,6 +31,26 @@ sphinx-markdown-builder = "^0.6.2"
 pytest-cov = "^4.1.0"
 httpx = "^0.24.1"
 flake8-docstrings = "^1.7.0"
+autoflake = "^2.2.0"
+isort = "^5.12.0"
+autopep8 = "^2.0.2"
+
+[tool.black]
+line-length = 79
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | \.mypy_cache
+  | \.tox
+  | \.eggs
+  | \.__pycache__
+  | build
+  | dist
+  | src/alembic/versions
+)/
+'''
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,12 +1,16 @@
+"""this is main module."""
+
+
 # from typing import Union
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# from src.modules.user import controller as user_controller
-from app_module import router
 from config import settings
-from src.config import get_db_session
+from config.logger import logging
+
+# from src.module.user import controller as user_controller
+from module.app import router
 from src.config import init_db
 
 # from sqlalchemy.orm import Session
@@ -28,28 +32,11 @@ app.add_middleware(
 
 app.include_router(router, prefix="/boilerplate/v1")
 
-# @app.get("/health")
-# async def health_check():
-#     """
-#     Health check endpoint
-#     """
-#     return {"message": "Ok!"}
-
-
-# Dependency to get a database session for each request
-# def get_db() -> Session:
-#     try:
-#         db = get_db_session()
-#         yield db
-#     finally:
-#         db.close()
-
 
 @app.on_event("startup")
 def startup_event():
+    """Execute the function when the application starts up."""
     # Create the database tables and set initial data
-    try:
-        db = get_db_session()
-        init_db(db)
-    finally:
-        db.close()
+    if settings.ENVIRONMENT == "development":
+        logging.info("Running init_db function.")
+        init_db()

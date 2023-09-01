@@ -1,5 +1,5 @@
+"""UserController module."""
 from typing import Annotated
-from typing import Any
 from typing import List
 
 # from api import deps
@@ -10,13 +10,12 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from config import get_db_session
-from modules.user.model import UserModel
-from modules.user.schemas import UserCreateRequest
-from modules.user.schemas import UserCreateResponse
-from modules.user.schemas import UserSchema
-from modules.user.schemas import UserUpdateRequest
-from modules.user.schemas import UserUpdateResponse
-from modules.user.service import UserService
+from module.user.schemas import UserCreateRequest
+from module.user.schemas import UserCreateResponse
+from module.user.schemas import UserSchema
+from module.user.schemas import UserUpdateRequest
+from module.user.schemas import UserUpdateResponse
+from module.user.user_service import user_service
 
 router = APIRouter(tags=["User"])
 
@@ -28,11 +27,8 @@ def read_messages(
     skip: int = 0,
     limit: int = 100,
 ) -> List[UserSchema]:
-    """
-    Retrieve users.
-    """
-
-    users = UserService.get_multi_by_session(
+    """Retrieve users."""
+    users = user_service.get_multi_by_session(
         db=db, session_id=session_id, skip=skip, limit=limit
     )
     return users
@@ -42,13 +38,10 @@ def read_messages(
 def create_user(
     *, db: Session = Depends(get_db_session), message_in: UserCreateRequest
 ) -> UserCreateResponse:
-    """
-    Create new message.
-    """
+    """Create new message."""
+    user = user_service.create(db=db, obj_in=message_in)
 
-    message = UserService.message.create(db=db, obj_in=message_in)
-
-    return message
+    return user
 
 
 @router.put("/users/{id}", response_model=UserUpdateResponse)
@@ -59,15 +52,14 @@ def update_message(
     user: Annotated[UserUpdateRequest, Body(embed=True)],
     # current_user: models.User = Depends(deps.get_current_active_user),
 ) -> UserUpdateResponse:
-    """
-    Update an user.
-    """
-    user = UserService.user.get(db=db, id=id)
+    """Update an user."""
+    user = user_service.user.get(db=db, id=id)
     if not user:
         raise HTTPException(status_code=404, detail="Item not found")
-    # if not UserService.user.is_superuser(current_user) and (message.owner_id != current_user.id):
+    # if not UserService.user.is_superuser(current_user) and
+    # (message.owner_id != current_user.id):
     #     raise HTTPException(status_code=400, detail="Not enough permissions")
-    user = UserService.user.update(db=db, db_obj=user, obj_in=user)
+    user = user_service.user.update(db=db, db_obj=user, obj_in=user)
     return user
 
 
@@ -84,7 +76,8 @@ def update_message(
 #     message = UserService.message.get(db=db, id=id)
 #     if not message:
 #         raise HTTPException(status_code=404, detail="Item not found")
-#     if not UserService.user.is_superuser(current_user) and (message.owner_id != current_user.id):
+#     if not UserService.user.is_superuser(current_user)
+#     and (message.owner_id != current_user.id):
 #         raise HTTPException(status_code=400, detail="Not enough permissions")
 #     return message
 
@@ -102,7 +95,8 @@ def update_message(
 #     message = UserService.message.get(db=db, id=id)
 #     if not message:
 #         raise HTTPException(status_code=404, detail="Item not found")
-#     if not UserService.user.is_superuser(current_user) and (message.owner_id != current_user.id):
+#     if not UserService.user.is_superuser(current_user)
+#     and (message.owner_id != current_user.id):
 #         raise HTTPException(status_code=400, detail="Not enough permissions")
 #     message = UserService.message.remove(db=db, id=id)
 #     return message

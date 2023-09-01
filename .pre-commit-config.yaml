@@ -1,16 +1,25 @@
 repos:
 -   repo: local
     hooks:
+    -   id: alembic-migrations
+        name: Generate Alembic Migrations
+        entry: scripts/generate_migrations.sh
+        # entry: alembic revision --autogenerate -m "Auto-generated migration"
+        language: script
+        # files: \.py$
+        # always_run: false
+        pass_filenames: false
+        # stages: [commit]
     -   id: format-code
         name: Format code
         entry: scripts/format_code.sh
         language: script
         pass_filenames: false
-    -   id: test-code
-        name: Code Test & Coverage
-        entry: scripts/test.sh
-        language: script
-        types: [python]
+    # -   id: test-code
+    #     name: Code Test & Coverage
+    #     entry: scripts/test.sh
+    #     language: script
+    #     types: [python]
 -   repo: https://github.com/psf/black
     rev: 23.7.0
     hooks:

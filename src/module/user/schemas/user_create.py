@@ -1,8 +1,5 @@
+"""User create schema."""
 from datetime import datetime
-from doctest import Example
-from os import name
-from typing import Any
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -10,12 +7,14 @@ from pydantic import ConfigDict
 from pydantic import EmailStr
 from pydantic import Field
 
-from modules.user.schemas import UserSchema
+from module.user.schemas import UserSchema
 
-# import modules.user.schemas.user_base as UserBaseSchema
+# import module.user.schemas.user_base as UserBaseSchema
 
 
 class Config(ConfigDict):
+    """Config defines the configuration for the BaseSchema class."""
+
     arbitrary_types_allowed = True
 
 
@@ -37,12 +36,14 @@ class UserCreateRequest(UserSchema):
 
 class UserCreateResponse(BaseModel):
     """
-    UserCreateResponse defines the attributes to be returned as a response when a new user is created.
+    UserCreateResponse defines the attributes to be returned as a response.
 
+    when a new user is created.
     Attributes:
         id (UUID): The unique identifier for this user.
         created_at (datetime): The date and time when this user was created.
-        created_by (Optional[UUID]): The unique identifier of the user who created this user.
+        created_by (Optional[UUID]): The unique identifier of the user who
+        created this user.
     """
 
     # Overriding the fields from BaseSchema to set them as required

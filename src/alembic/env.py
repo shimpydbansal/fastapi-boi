@@ -18,7 +18,7 @@ from sqlalchemy import pool
 from sqlalchemy import text
 
 from alembic import context
-from common import BaseModel
+from src.common import BaseModel
 
 # set parent directory path
 # Get the current file's directory
@@ -53,14 +53,16 @@ def get_url():
     """Return the database URL that is based on the environment variables.
 
     The function reads the following environment variables:
-    - DB_USER: The username for the database connection. Defaults to 'project1'.
-    - DB_PASSWORD: The password for the database connection. Defaults to 'project1'.
-    - DB_HOST: The hostname for the database connection. Defaults to 'localhost'.
-    - DB_PORT: The port number for the database connection. Defaults to '5432'.
-    - DB_NAME: The name of the database to connect to. Defaults to 'project1'.
+    - DB_USER: The username for the database connection. Defaults 'project1'.
+    - DB_PASSWORD: The password for the database connection.
+        Defaults 'project1'.
+    - DB_HOST: The hostname for the database connection. Defaults 'localhost'.
+    - DB_PORT: The port number for the database connection. Defaults '5432'.
+    - DB_NAME: The name of the database to connect to. Defaults 'project1'.
 
     Returns:
-    A string representing the database URL in the format 'postgresql://user:password@host:port/database'.
+    A string representing the database URL in the format
+    'postgresql://user:password@host:port/database'.
     """
     user = os.getenv("DB_USER", "project1")
     password = os.getenv("DB_PASSWORD", "project1")
