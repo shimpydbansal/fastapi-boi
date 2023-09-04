@@ -18,6 +18,7 @@ from sqlalchemy import pool
 from sqlalchemy import text
 
 from alembic import context
+from alembic.autogenerate import produce_migrations
 from src.common import BaseModel
 
 # set parent directory path
@@ -43,10 +44,48 @@ if config.config_file_name is not None:
 
 target_metadata = BaseModel.metadata
 
+current_schema = os.getenv("DB_SCHEMA", "project1_schema")
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+
+def check_and_delete_empty_migration():
+    """
+    Check the latest migration file and delete if it's found to be empty.
+
+    This function identifies the most recently generated migration file
+    within the 'versions' directory. If the migration file does not contain
+    any operations or SQLAlchemy commands (i.e., lacks "op." and "sa."),
+    the file is considered empty and is deleted.
+    """
+    # Path to the versions directory
+    versions_path = os.path.join(current_dir, "versions")
+
+    # List all .py files (excluding __init__.py) and sort them by modification
+    # time
+    all_migrations = sorted(
+        [
+            f
+            for f in os.listdir(versions_path)
+            if f.endswith(".py") and f != "__init__.py"
+        ],
+        key=lambda f: os.path.getmtime(os.path.join(versions_path, f)),
+        reverse=True,  # From latest to earliest
+    )
+
+    if not all_migrations:
+        return
+
+    latest_migration_path = os.path.join(versions_path, all_migrations[0])
+
+    print(f"Checking {latest_migration_path}")
+    with open(latest_migration_path, "r") as file:
+        content = file.read()
+        if "op." not in content and "sa." not in content:
+            os.remove(latest_migration_path)
 
 
 def get_url():
@@ -91,10 +130,13 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_schemas=True,
     )
 
     with context.begin_transaction():
         context.run_migrations()
+
+    # check_and_delete_empty_migration()
 
 
 def run_migrations_online() -> None:
@@ -112,7 +154,6 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
 
-    current_schema = os.getenv("DB_SCHEMA", "project1_schema")
     with connectable.connect() as connection:
         # set search path on the connection, which ensures that
         # PostgreSQL will emit all CREATE / ALTER / DROP statements
@@ -129,10 +170,27 @@ def run_migrations_online() -> None:
             connection=connection,
             target_metadata=target_metadata,
             compare_type=True,
+            include_schemas=True,
         )
+
+        # Get the Alembic context
+        alembic_context = context.get_context()
+
+        # Generate the diff between metadata and database
+        # migration_context = Operations(alembic_context)
+        diff = produce_migrations(alembic_context, target_metadata)
+
+        # Check if the diff has any operations (changes)
+        if not diff.upgrade_ops.is_empty():
+            # If no operations are found, raise an exception to prevent
+            # the creation of the migration file
+            print("No changes detected. No migration file generated.")
+            sys.exit(0)
 
         with context.begin_transaction():
             context.run_migrations()
+
+        # check_and_delete_empty_migration()
 
 
 if context.is_offline_mode():

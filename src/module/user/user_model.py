@@ -11,6 +11,7 @@ class UserModel(BaseModel):
     """This class defines a user model."""
 
     __tablename__ = "user"
+    __table_args__ = {"schema": "project1_schema"}
 
     name = Column(String)
     email = Column(String, unique=True, index=True)
