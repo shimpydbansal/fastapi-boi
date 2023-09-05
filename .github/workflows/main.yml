@@ -11,6 +11,18 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
+    services:
+      postgres:
+        image: postgres:14.8-alpine
+        env:
+          POSTGRES_USER: project1
+          POSTGRES_PASSWORD: project1
+          POSTGRES_DB: project1
+          POSTGRES_SCHEMA: project1_schema
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -46,6 +58,15 @@ jobs:
 
       - name: Install Dependencies with Poetry
         run: poetry install
+
+      - name: Wait for PostgreSQL to become ready
+        run: |
+          while ! pg_isready -h localhost -p 5432 > /dev/null 2> /dev/null; do
+            sleep 1
+          done
+
+      - name: Run Database Migrations
+        run: bash scripts/run_migrations.sh
 
       - name: Check Code Formatting
         run: bash scripts/check_format.sh
