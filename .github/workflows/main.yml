@@ -75,6 +75,7 @@ jobs:
           POSTGRES_PASSWORD: project1
           POSTGRES_DB: project1
           POSTGRES_SCHEMA: project1_schema
+          PGPASSWORD: project1
 
       - name: Check Code Formatting
         run: bash scripts/check_format.sh
