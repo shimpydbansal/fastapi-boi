@@ -8,8 +8,8 @@ The project has the following structure:
 
 - `src/`: This is where the source code of the application lives.
     - `config/`: Configuration files.
-    - `utils/`: Utility scripts and functions.
-    - `modules/`: Each module of the application has its own directory in this folder. Each module directory contains:
+    - `util/`: Utility scripts and functions.
+    - `module/`: Each module of the application has its own directory in this folder. Each module directory contains:
         - `module.controller.py`: Defines the routes for this module.
         - `module.model.py`: Defines the data model for this module.
         - `module.service.py`: Contains business logic related to this module.
