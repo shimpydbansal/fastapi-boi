@@ -1,4 +1,5 @@
 #!/bin/sh -e
 set -x
 
-poetry run pytest --cov=src --cov-report=term-missing --cov-fail-under=1 src "${@}"
+export ENVIRONMENT=test
+poetry run pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=75 src "${@}"

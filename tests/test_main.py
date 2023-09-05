@@ -13,6 +13,7 @@ def test_handle_health():
     status code is 200 and the response JSON contains the expected keys
     and values.
     """
-    response = client.get("/health")
+    response = client.get("/boilerplate/v1/health")
+    print(response.json())
     assert response.status_code == 200
     assert response.json() == {"database": True, "message": "Ok!"}

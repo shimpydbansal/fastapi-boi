@@ -1,4 +1,5 @@
 """Environment variables configuration."""
+import os
 from typing import Any
 from typing import Dict
 from typing import List
@@ -10,11 +11,13 @@ from pydantic import PostgresDsn
 from pydantic import validator
 from pydantic_settings import BaseSettings
 
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
+
 
 class Settings(BaseSettings):
     """Environment variables configuration."""
 
-    ENVIRONMENT: str = "development"
+    ENVIRONMENT: str = ENVIRONMENT
     PROJECT_NAME: str
     API_V1_STR: str = "/api/v1"
     # SERVER_NAME: str
@@ -78,8 +81,12 @@ class Settings(BaseSettings):
             """Initialize the class."""
 
         case_sensitive = True
-        env_file = ".env"
         check_fields = False
+
+        if ENVIRONMENT == "development":
+            env_file = ".env"
+        elif ENVIRONMENT == "test":
+            env_file = ".env.test"
 
 
 settings = Settings()

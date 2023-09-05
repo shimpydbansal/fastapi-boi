@@ -6,12 +6,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import init_db
+from config import logger
 from config import settings
-from config.logger import logging
 
 # from src.module.user import controller as user_controller
-from module.app import router
-from src.config import init_db
+from module.routes import router
 
 # from sqlalchemy.orm import Session
 
@@ -38,5 +38,5 @@ def startup_event():
     """Execute the function when the application starts up."""
     # Create the database tables and set initial data
     if settings.ENVIRONMENT == "development":
-        logging.info("Running init_db function.")
+        logger.info("Running init_db function.")
         init_db()
