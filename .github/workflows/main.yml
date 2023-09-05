@@ -32,11 +32,12 @@ jobs:
 
       - name: Get Poetry cache files location
         id: poetry-cache
-        run: echo "::set-output name=dir::$(poetry config cache-dir)"
+        # run: echo "::set-output name=dir::$(poetry config cache-dir)"
+        run: echo "dir=$(poetry config cache-dir)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.poetry-cache.outputs.dir }}
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
@@ -96,11 +97,11 @@ jobs:
 
       - name: Get Poetry cache files location
         id: poetry-cache
-        run: echo "::set-output name=dir::$(poetry config cache-dir)"
+        run: echo "dir=$(poetry config cache-dir)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.poetry-cache.outputs.dir }}
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
