@@ -65,8 +65,8 @@ jobs:
             sleep 1
           done
 
-      - name: Install PostgreSQL Client
-        run: sudo apt-get install -y postgresql-client
+      # - name: Install PostgreSQL Client
+      #   run: sudo apt-get install -y postgresql-client
 
       - name: Run Database Migrations
         run: bash scripts/run_migrations.sh
