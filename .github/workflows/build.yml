@@ -83,7 +83,7 @@ jobs:
       - name: Run Tests
         run: bash scripts/test.sh
 
-  build:
+  publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -102,56 +102,3 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-boilerplate:latest
-
-  documentation:
-    needs: [test, build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
-
-      - name: Create and start virtual environment
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-
-      - name: Get Poetry cache files location
-        id: poetry-cache
-        run: echo "dir=$(poetry config cache-dir)" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.poetry-cache.outputs.dir }}
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install Dependencies with Poetry
-        run: poetry install
-
-      - name: Generate Documentation
-        run: bash scripts/documentation.sh
-
-      - name: Commit Documentation Changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add documentation/*
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update documentation"
-            git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          fi
