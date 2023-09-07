@@ -5,7 +5,7 @@ set -x
 commit_message=$(git log -1 --pretty=%B)
 
 # Activate the virtual environment
-source venv/bin/activate
+source .venv/bin/activate
 
 # Determine the version bump based on the commit message
 if echo "$commit_message" | grep -q "^BREAKING CHANGE:"; then

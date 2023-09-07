@@ -1,7 +1,8 @@
 #!/bin/sh -e
 set -x
 
-source venv/bin/activate
+# Activate the virtual environment
+source .venv/bin/activate
 
 # Remove unused imports and variables
 autoflake \
@@ -9,13 +10,13 @@ autoflake \
   --recursive \
   --remove-unused-variables \
   --in-place src \
-  --exclude=__init__.py,venv
+  --exclude=__init__.py,.venv
 
 # Sort imports
 isort --force-single-line-imports --line-length 79 src
 
 # Reformat code using Black
-black -l 79 src --exclude=venv,alembic/versions/*.py
+black -l 79 src --exclude=.venv,alembic/versions/*.py
 
 # Format code according to PEP 8
-autopep8 --in-place --aggressive --aggressive --recursive src --exclude=venv
+autopep8 --in-place --aggressive --aggressive --recursive src --exclude=.venv
